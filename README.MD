@@ -26,17 +26,26 @@ Given a collection of 5-digit ZIP code ranges (each range includes both their up
 
 ### General Approach
 
-1. Parse arguments as `String` array to `String` 2D array.
-2. Sort Array by using a Comparator to compare the lower bound of each range.
-3. Convert Array to List for `.add` & `.remove` operations.
-4. Create two lists, `source`(original list) and `target`(empty solution list)
-    + While `source` has more than one item.
-        + Remove the next two items from `source`.
-            + If items (two array ranges) overlap, merge them, and insert back into `source`. Restart while block.
-            + If items don't overlap, insert first item into `target`, and second item into `source`. Restart while block.
-    + When `source` has one item, insert the single item into `target`
+1. Parse arguments as `String` array to `Integer` 2D array.
+2. Sort Array by nested array's lower bound of each range using a Comparator.
+3. Create two `List<Integer[]>`:
+    + `source`(Original array as list)
+    + `target`(Empty list for storing answer)
+4. While `source` has more than one item.
+    + Remove the next two items from `source`.
+        + If items (two `Integer[]`) overlap, merge them, and insert back into `source`. Restart while block.
+        + If items don't overlap, insert first item into `target`, and second item into `source`. Restart while block.
+    + When `source` has one item, insert that item into `target`
 5. Return `List<Integer[]>`
 
+#### Runtime Details
+
+Sorting + Adding and Removing from lists: 
+`O(n*log(n))` + `O(n)` = `O(n*log(n))`
+
+**References: `Arrays.sort` according to the [docs] 
+
+> This algorithm offers n*log(n) performance on many data sets that cause other quicksorts to degrade to quadratic performance.
 
 ### Usage
 
@@ -48,3 +57,24 @@ Output:
 ```shell script
 [94133, 94399]
 ```
+#### Errors
+
+##### For Invalid Zipcodes
+
+`java -jar build/libs/ws-coding-challange-1.0-SNAPSHOT.jar 94226,94399 94133,94200 94134,9429`
+
+```shell script
+Invalid input:       Invalid Zip code
+```
+
+##### For Invalid Ranges
+
+`java -jar build/libs/ws-coding-challange-1.0-SNAPSHOT.jar 9422694399`
+
+```shell script
+Invalid input:       Delimiter "," not found in range
+```
+
+<!-- Links -->
+
+[docs]: https://docs.oracle.com/javase/6/docs/api/java/util/Arrays.html#sort%28byte%5B%5D%29

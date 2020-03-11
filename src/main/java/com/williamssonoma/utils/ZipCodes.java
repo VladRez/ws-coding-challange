@@ -12,28 +12,14 @@ import java.util.stream.Collectors;
 
 public class ZipCodes {
 
-    private final String zipcodePattern = "^[0-9]{5}$";
+    private static String zipcodePattern = "^[0-9]{5}$";
 
-    public static Integer[][] parseList(String[] strArr) {
-        List<String> args = Arrays.asList(strArr);
-        List<String[]> arraysAsString = args.stream().map(arg->{
-
-           String[] valuesAsString = arg.split(",");
-          return valuesAsString;
-        }).collect(Collectors.toList());
-
-        List<Integer[]> listOfValues =arraysAsString.stream().map(array->{
-            return Arrays.stream(array).mapToInt(Integer::parseInt).boxed().toArray(Integer[]::new);
-        }).collect(Collectors.toList());
-
-        Integer[][] zipcodes = listOfValues.stream().toArray(Integer[][]::new);
-
-        return zipcodes;
-    }
-
-    private static Boolean validateInput(String[] values) {
-//        return Pattern.compile(pattern).matcher(value).find();
-        return false;
+    private static Boolean validateInput(String value, String pattern, String message) throws ZipCodeErrors{
+       boolean valid = Pattern.compile(pattern).matcher(value).matches();
+        if (!valid) {
+            throw new ZipCodeErrors("Invalid input:\t" + message);
+        }
+        return true;
     }
     public static List<Integer[]> mergeRanges(Integer[][] ranges){
         sortRanges(ranges);
@@ -86,6 +72,37 @@ public class ZipCodes {
 
         Integer upperBound =  Collections.max(Arrays.asList(x2,y2));
         Integer lowerBound = Collections.min(Arrays.asList(x1,y1));
-        return (upperBound - lowerBound) < (x2 - x1) + (y2 - y1);
+        return (upperBound - lowerBound) <= (x2 - x1) + (y2 - y1);
+    }
+
+    public static Integer[][] parseList(String[] strArr)  {
+
+        List<String> args = Arrays.asList(strArr);
+        List<String[]> arraysAsString = args.stream().map(arg->{
+            try{
+                validateInput(arg, "\\d.*,\\d*", "delimiter \",\" not found in range");
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+                System.exit(1);
+            }
+            String[] valuesAsString = arg.split(",");
+            Arrays.stream(valuesAsString).forEach(arr->{
+                try{
+                    validateInput(arr, zipcodePattern, "Invalid Zip code");
+                } catch (Exception e){
+                    System.out.println(e.getMessage());
+                    System.exit(1);
+                }
+            });
+            return valuesAsString;
+        }).collect(Collectors.toList());
+
+        List<Integer[]> listOfValues =arraysAsString.stream().map(array->{
+            return Arrays.stream(array).mapToInt(Integer::parseInt).boxed().toArray(Integer[]::new);
+        }).collect(Collectors.toList());
+
+        Integer[][] zipcodes = listOfValues.stream().toArray(Integer[][]::new);
+
+        return zipcodes;
     }
 }
