@@ -19,7 +19,7 @@ Given a collection of 5-digit ZIP code ranges (each range includes both their up
 
 + Each range will be in the format of `lowerBound,upperBound` 
 + Multiple ranges will not be in the same order.
-+ User will use this solution as through cli with arguments format: `lower,upper lower,upper lower,upper`
++ User will use test this through cli with arguments format: `lower,upper lower,upper lower,upper`
     + i.e `java -jar buid/libs/app.jar 94200,94299 94600,94699`
 
 ### General Approach
