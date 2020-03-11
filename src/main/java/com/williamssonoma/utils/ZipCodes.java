@@ -43,6 +43,8 @@ public class ZipCodes {
         }
     }
     private static Integer[] joinRange(Integer[] arr1, Integer[] arr2){
+        // check if arr2 is inside of arr1
+        if (arr1[0] < arr2[0] && arr1[1] > arr2[1]) return arr1;
         Integer[] arr = new Integer[] {arr1[0], arr2[1]};
         return arr;
     }
