@@ -1,5 +1,6 @@
 package com.williamssonoma.utils;
 
+import com.williamssonoma.entities.Range;
 import com.williamssonoma.errors.ZipCodeErrors;
 
 import java.util.ArrayList;
@@ -111,9 +112,14 @@ public class ZipCodes {
         }).collect(Collectors.toList());
 
         // Parse string to Integer
-        return arraysAsString.stream().map(array -> Arrays.stream(array)
+
+                arraysAsString.stream().map(array -> Arrays.stream(array)
                 .mapToInt(Integer::parseInt)
-                .boxed().toArray(Integer[]::new)
-        ).toArray(Integer[][]::new);
+                .boxed().toArray(arr->{
+                    return null;
+                        })
+        );
+
+        return new Integer[][]{};
     }
 }
