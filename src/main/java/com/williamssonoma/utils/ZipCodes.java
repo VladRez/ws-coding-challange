@@ -21,7 +21,9 @@ public class ZipCodes {
         }
         return true;
     }
+
     public static List<Integer[]> mergeRanges(Integer[][] ranges){
+        ensureRangeOrder(ranges);
         sortRanges(ranges);
         List<Integer[]> source = new ArrayList<>(Arrays.asList(ranges));
         List<Integer[]> target = new ArrayList<>();
@@ -29,6 +31,17 @@ public class ZipCodes {
         return target;
     }
 
+    private static void ensureRangeOrder(Integer[][] arr){
+        for (int i = 0; i < arr.length; i++) {
+            Integer [] subarr = arr[i];
+            int lower = subarr[0];
+            int upper = subarr[1];
+            if (lower > upper){
+               subarr[1] = lower;
+               subarr[0] = upper;
+            }
+        }
+    }
     private static Integer[] joinRange(Integer[] arr1, Integer[] arr2){
         Integer[] arr = new Integer[] {arr1[0], arr2[1]};
         return arr;
