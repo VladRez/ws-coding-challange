@@ -19,7 +19,7 @@ public class ZipCodesTest {
         String [] validInput = {"94226,94399", "94133,94200", "94134,94299"};
         Integer[][] validOutput = {{94226,94399}, {94133,94200},{94134,94299}};
 
-        Integer[][] output = ZipCodes.parseList(validInput);
+        Integer[][] output = ZipCodes.parseCliArgs(validInput);
         Assert.assertArrayEquals(validOutput[0], output[0]);
         Assert.assertArrayEquals(validOutput[1], output[1]);
         Assert.assertArrayEquals(validOutput[2], output[2]);

@@ -48,12 +48,7 @@ public class ZipCodes {
     }
 
     private static void sortRanges(Integer[][] ranges){
-        Arrays.sort(ranges, new Comparator<Integer[]>() {
-            @Override
-            public int compare(Integer[] o1, Integer[] o2) {
-                return Integer.compare(o2[0], o1[0]);
-            }
-        });
+        Arrays.sort(ranges, (o1, o2) -> Integer.compare(o2[0], o1[0]));
     }
 
     private static void resolve(List<Integer[]> original, List<Integer[]> solution){
@@ -88,10 +83,12 @@ public class ZipCodes {
         return (upperBound - lowerBound) <= (x2 - x1) + (y2 - y1);
     }
 
-    public static Integer[][] parseList(String[] strArr)  {
+    public static Integer[][] parseCliArgs(String[] strArr)  {
 
         List<String> args = Arrays.asList(strArr);
+        // Validate Inputs
         List<String[]> arraysAsString = args.stream().map(arg->{
+            // Validate Input ranges
             try{
                 validateInput(arg, "\\d.*,\\d*", "delimiter \",\" not found in range");
             } catch (Exception e){
@@ -100,6 +97,7 @@ public class ZipCodes {
             }
             String[] valuesAsString = arg.split(",");
             Arrays.stream(valuesAsString).forEach(arr->{
+                // Validate zip code number
                 try{
                     validateInput(arr, zipcodePattern, "Invalid Zip code");
                 } catch (Exception e){
@@ -110,12 +108,10 @@ public class ZipCodes {
             return valuesAsString;
         }).collect(Collectors.toList());
 
-        List<Integer[]> listOfValues =arraysAsString.stream().map(array->{
-            return Arrays.stream(array).mapToInt(Integer::parseInt).boxed().toArray(Integer[]::new);
-        }).collect(Collectors.toList());
-
-        Integer[][] zipcodes = listOfValues.stream().toArray(Integer[][]::new);
-
-        return zipcodes;
+        // Parse string to Integer
+        return arraysAsString.stream().map(array -> Arrays.stream(array)
+                .mapToInt(Integer::parseInt)
+                .boxed().toArray(Integer[]::new)
+        ).toArray(Integer[][]::new);
     }
 }
