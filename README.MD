@@ -73,6 +73,10 @@ Invalid input:       Invalid Zip code
 Invalid input:       Delimiter "," not found in range
 ```
 
+### Improvements
+
++ Consider refactoring Collection of `List<Integer[]>` to `List<Range>` to avoid using primitive types.
+
 <!-- Links -->
 
 [docs]: https://docs.oracle.com/javase/6/docs/api/java/util/Arrays.html#sort%28byte%5B%5D%29
