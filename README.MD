@@ -31,10 +31,10 @@ Given a collection of 5-digit ZIP code ranges (each range includes both their up
     + `target`(Empty list for storing answer)
 4. While `source` has more than one item.
     + Remove the next two items from `source`.
-        + If items (two `Integer[]`) overlap, merge them, and insert back into `source`. Restart while block.
-        + If items don't overlap, insert first item into `target`, and second item into `source`. Restart while block.
+        + If items (two `Integer[]`) overlap, merge them, and insert merged item back into `source`. Restart `while` block.
+        + If items don't overlap, insert first item into `target`, and second item into `source`. Restart `while` block.
     + When `source` has one item, insert that item into `target`
-5. Return `List<Integer[]>`
+5. Return `List<Integer[]>` and print output.
 
 #### Runtime Details
 
