@@ -15,7 +15,7 @@ public class ZipCodesTest {
 
 
     @Test
-    public void parseList() {
+    public void parseValidList() {
         String [] validInput = {"94226,94399", "94133,94200", "94134,94299"};
         Integer[][] validOutput = {{94226,94399}, {94133,94200},{94134,94299}};
 
