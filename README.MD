@@ -38,7 +38,7 @@ Given a collection of 5-digit ZIP code ranges (each range includes both their up
 #### Runtime Details
 
 Sorting + Adding and Removing from lists: 
-`O(n*log(n))` + `O(n)` = `O(n*log(n))`
+`O(nlog(n))` + `O(n)` = `O(nlog(n))`
 
 **References: `Comparator.sort` according to the [docs] 
 
