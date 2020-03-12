@@ -12,7 +12,6 @@ Any item might be restricted based on multiple sets of these ranges obtained fro
 
 Given a collection of 5-digit ZIP code ranges (each range includes both their upper and lower bounds), provide an algorithm that produces the minimum number of ranges required to represent the same restrictions as the input.
 
-
 ## SOLUTION
 
 ### Assumptions
@@ -24,26 +23,26 @@ Given a collection of 5-digit ZIP code ranges (each range includes both their up
 
 ### General Approach
 
-1. Parse arguments as `String` array to `Integer` 2D array.
-2. Ensure `lowerBound:upperBound` format, then Sort the 2D array by its nested sub-array's lower bound.
-3. Create two `List<Integer[]>`:
-    + `source`(Original array as list)
-    + `target`(Empty list for storing answer)
-4. While `source` has more than one item.
-    + Remove the next two items from `source`.
-        + If items (two `Integer[]`) overlap, merge them, and insert merged item back into `source`. Restart `while` block.
-        + If items don't overlap, insert first item into `target`, and second item into `source`. Restart `while` block.
-    + When `source` has one item, insert that item into `target`
-5. Return `List<Integer[]>` and print output.
+1. Parse cli arguments from `String[]` to `List<Range>`, where `Range` object contains upper & lower bound properties
+2. Ensure `lowerBound,upperBound` format, then Sort the List using a custom `RangeComparator`.
+3. Create two `List<Range>`:
+    + `ranges`(Original list)
+    + `target`(Empty list for storing new ranges)
+4. In a while loop, check if `ranges` list has more than one item.
+    + Pop out the next two items from `ranges`.
+        + If the two items (`Range` objects) overlap, merge them, and insert back into `ranges`.
+        + If items don't overlap, insert first item into `target`, and second item into `ranges`. 
+    + When `ranges` has one item remaining insert item into `target`.
+5. Return `List<Range>` and print output.
 
 #### Runtime Details
 
 Sorting + Adding and Removing from lists: 
 `O(n*log(n))` + `O(n)` = `O(n*log(n))`
 
-**References: `Arrays.sort` according to the [docs] 
+**References: `Comparator.sort` according to the [docs] 
 
-> This algorithm offers n*log(n) performance on many data sets that cause other quicksorts to degrade to quadratic performance.
+> The sorting algorithm is a modified mergesort (in which the merge is omitted if the highest element in the low sublist is less than the lowest element in the high sublist). This algorithm offers guaranteed n log(n) performance.
 
 ### Usage
 
@@ -75,4 +74,4 @@ Invalid input:       Delimiter "," not found in range
 
 <!-- Links -->
 
-[docs]: https://docs.oracle.com/javase/6/docs/api/java/util/Arrays.html#sort%28byte%5B%5D%29
+[docs]: https://docs.oracle.com/javase/7/docs/api/java/util/Collections.html#sort(java.util.List)

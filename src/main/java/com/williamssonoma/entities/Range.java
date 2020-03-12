@@ -4,10 +4,6 @@ public class Range {
     private Integer lowerBound;
     private Integer upperBound;
 
-    public Range(Integer lowerBound, Integer upperBound){
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-    }
     public Range(Integer[] bounds){
         this.lowerBound = bounds[0];
         this.upperBound = bounds[1];
@@ -27,5 +23,17 @@ public class Range {
 
     public void setUpperBound(Integer upperBound) {
         this.upperBound = upperBound;
+    }
+
+    public Integer[] getBoundsAsArray(){
+        return new Integer[]{this.lowerBound, this.upperBound};
+    }
+
+    @Override
+    public String toString() {
+        return "Range{" +
+                "lowerBound=" + lowerBound +
+                ", upperBound=" + upperBound +
+                '}';
     }
 }
