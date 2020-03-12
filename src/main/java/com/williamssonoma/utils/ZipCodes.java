@@ -1,11 +1,11 @@
 package com.williamssonoma.utils;
 
+import com.williamssonoma.entities.Range;
 import com.williamssonoma.errors.ZipCodeErrors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -14,55 +14,55 @@ public class ZipCodes {
 
     private static String zipcodePattern = "^[0-9]{5}$";
 
-    private static Boolean validateInput(String value, String pattern, String message) throws ZipCodeErrors{
-       boolean valid = Pattern.compile(pattern).matcher(value).matches();
-        if (!valid) {
-            throw new ZipCodeErrors("Invalid input:\t" + message);
-        }
-        return true;
-    }
-
-    public static List<Integer[]> mergeRanges(Integer[][] ranges){
+    // Main
+    public static List<Range> mergeRanges(List<Range> ranges){
         ensureRangeOrder(ranges);
         sortRanges(ranges);
-        List<Integer[]> source = new ArrayList<>(Arrays.asList(ranges));
-        List<Integer[]> target = new ArrayList<>();
-        resolve(source, target);
+        List<Range> target = new ArrayList<Range>();
+        resolve(ranges, target);
         return target;
     }
 
-    private static void ensureRangeOrder(Integer[][] arr){
-        for (int i = 0; i < arr.length; i++) {
-            Integer [] subarr = arr[i];
-            int lower = subarr[0];
-            int upper = subarr[1];
+    // swap bounds in the case of upperBound,lowerBound
+    private static void ensureRangeOrder(List<Range> ranges){
+        for (int i = 0; i < ranges.size(); i++) {
+            Range range = ranges.get(i);
+            int lower = range.getLowerBound();
+            int upper = range.getUpperBound();
             if (lower > upper){
-               subarr[1] = lower;
-               subarr[0] = upper;
+                range.setUpperBound(lower);
+                range.setLowerBound(upper);
             }
         }
     }
-    private static Integer[] joinRange(Integer[] arr1, Integer[] arr2){
+
+    // Logic to join two ranges
+    private static Range joinRange(Range range1, Range range2){
         // check if arr2 is inside of arr1
-        if (arr1[0] < arr2[0] && arr1[1] > arr2[1]) return arr1;
-        Integer[] arr = new Integer[] {arr1[0], arr2[1]};
-        return arr;
+        if (range1.getLowerBound() < range2.getLowerBound() && range1.getUpperBound() > range2.getUpperBound())
+            return range1;
+
+        Integer[] bounds = new Integer[] {range1.getLowerBound(), range2.getUpperBound()};
+        return new Range (bounds);
+
     }
 
-    private static void sortRanges(Integer[][] ranges){
-        Arrays.sort(ranges, (o1, o2) -> Integer.compare(o2[0], o1[0]));
+    // Sorts Ranges
+    private static void sortRanges(List<Range> ranges){
+        Collections.sort(ranges, new RangeComparator());
     }
 
-    private static void resolve(List<Integer[]> original, List<Integer[]> solution){
+    // Logic to merge ranges
+    private static void resolve(List<Range> original, List<Range> solution){
 
         while (original.size() >1){
-            Integer[] item1 = original.remove(original.size() - 1);
-            Integer[] item2 = original.remove(original.size() - 1);
+            Range item1 = original.remove(original.size() - 1);
+            Range item2 = original.remove(original.size() - 1);
 
             boolean overlapping = isOverlapping(item1, item2);
 
             if (overlapping){
-                Integer[] joinedRange = joinRange(item1, item2);
+                Range joinedRange = joinRange(item1, item2);
                 original.add(joinedRange);
                 continue;
             }
@@ -74,18 +74,20 @@ public class ZipCodes {
         if(original.size() > 0) solution.add(original.get(0));
     }
 
-    private static boolean isOverlapping(Integer[] arr1, Integer[] arr2){
-        Integer x1 = arr1[0];
-        Integer x2 = arr1[1];
-        Integer y1 = arr2[0];
-        Integer y2 = arr2[1];
+    //Check if ranges overlap
+    private static boolean isOverlapping(Range range1, Range range2){
+        Integer x1 = range1.getLowerBound();
+        Integer x2 = range1.getUpperBound();
+        Integer y1 = range2.getLowerBound();
+        Integer y2 = range2.getUpperBound();
 
         Integer upperBound =  Collections.max(Arrays.asList(x2,y2));
         Integer lowerBound = Collections.min(Arrays.asList(x1,y1));
         return (upperBound - lowerBound) <= (x2 - x1) + (y2 - y1);
     }
 
-    public static Integer[][] parseCliArgs(String[] strArr)  {
+    // Parses the commandline arguments from string array to Range collection
+    public static List<Range> parseCliArgs(String[] strArr)  {
 
         List<String> args = Arrays.asList(strArr);
         // Validate Inputs
@@ -111,9 +113,22 @@ public class ZipCodes {
         }).collect(Collectors.toList());
 
         // Parse string to Integer
-        return arraysAsString.stream().map(array -> Arrays.stream(array)
-                .mapToInt(Integer::parseInt)
-                .boxed().toArray(Integer[]::new)
-        ).toArray(Integer[][]::new);
+       List<Integer[]> arraysAsInt = arraysAsString.stream().map(array ->Arrays.stream(array)
+               .mapToInt(Integer::parseInt)
+               .boxed().toArray(Integer[]::new)
+        ).collect(Collectors.toList());
+
+       // Return List of Range items
+        return arraysAsInt.stream().map(Range::new).collect(Collectors.toList());
+
+    }
+
+    // Validate cli arguments using regex
+    private static Boolean validateInput(String value, String pattern, String message) throws ZipCodeErrors{
+        boolean valid = Pattern.compile(pattern).matcher(value).matches();
+        if (!valid) {
+            throw new ZipCodeErrors("Invalid input:\t" + message);
+        }
+        return true;
     }
 }
