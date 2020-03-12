@@ -72,9 +72,6 @@ Invalid input:       Invalid Zip code
 Invalid input:       Delimiter "," not found in range
 ```
 
-### Improvements
-
-+ Consider refactoring Collection of `List<Integer[]>` to `List<Range>` to avoid using primitive types.
 
 <!-- Links -->
 
